@@ -127,6 +127,9 @@ static int ged_probe(struct platform_device *pdev)
 	struct acpi_ged_device *geddev;
 	acpi_status acpi_ret;
 
+	if (!acpi_gbl_reduced_hardware)
+		return -ENODEV;
+
 	geddev = devm_kzalloc(&pdev->dev, sizeof(*geddev), GFP_KERNEL);
 	if (!geddev)
 		return -ENOMEM;
