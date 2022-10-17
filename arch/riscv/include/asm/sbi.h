@@ -30,6 +30,7 @@ enum sbi_ext_id {
 	SBI_EXT_HSM = 0x48534D,
 	SBI_EXT_SRST = 0x53525354,
 	SBI_EXT_PMU = 0x504D55,
+	SBI_EXT_ATST = 0x41545354,
 
 	/* Experimentals extensions must lie within this range */
 	SBI_EXT_EXPERIMENTAL_START = 0x08000000,
@@ -84,6 +85,8 @@ enum sbi_hsm_hart_state {
 	SBI_HSM_STATE_SUSPEND_PENDING,
 	SBI_HSM_STATE_RESUME_PENDING,
 };
+
+
 
 #define SBI_HSM_SUSP_BASE_MASK			0x7fffffff
 #define SBI_HSM_SUSP_NON_RET_BIT		0x80000000
@@ -205,6 +208,14 @@ enum sbi_pmu_ctr_type {
 /* Flags defined for counter stop function */
 #define SBI_PMU_STOP_FLAG_RESET (1 << 0)
 
+/* Attestation extension functions IDs */
+enum sbi_ext_atst_fid {
+	SBI_EXT_ATST_GET_CAPABILITIES = 0,
+	SBI_EXT_ATST_GET_EVIDENCE,
+	SBI_EXT_ATST_EXTEND_MSMT,
+	SBI_EXT_ATST_READ_MSMT,
+};
+
 #define SBI_SPEC_VERSION_DEFAULT	0x1
 #define SBI_SPEC_VERSION_MAJOR_SHIFT	24
 #define SBI_SPEC_VERSION_MAJOR_MASK	0x7f
@@ -266,6 +277,12 @@ int sbi_remote_hfence_vvma_asid(const struct cpumask *cpu_mask,
 				unsigned long start,
 				unsigned long size,
 				unsigned long asid);
+int sbi_atst_get_evidence(unsigned long csr,
+			  unsigned long csr_len,
+			  unsigned long request_data,
+			  unsigned long evidence_format,
+			  unsigned long certificate,
+			  unsigned long certificate_len);
 int sbi_probe_extension(int ext);
 
 /* Check if current SBI specification version is 0.1 or not */

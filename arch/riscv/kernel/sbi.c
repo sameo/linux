@@ -577,6 +577,39 @@ static void sbi_srst_power_off(void)
 		       SBI_SRST_RESET_REASON_NONE);
 }
 
+int sbi_atst_get_evidence(unsigned long csr,
+			unsigned long csr_len,
+			unsigned long request_data,
+			unsigned long evidence_format,
+			unsigned long certificate,
+			unsigned long certificate_len)
+{
+	struct sbiret ret;
+	int i;
+
+	pr_err("CSR %ld at 0x%lx\n", csr_len, csr);
+	pr_err("certificate %ld at 0x%lx\n", certificate_len, certificate);
+
+	ret = sbi_ecall(SBI_EXT_ATST, SBI_EXT_ATST_GET_EVIDENCE,
+		csr, csr_len,
+		request_data, evidence_format,
+		certificate, certificate_len);
+
+	pr_err("%s: failed (error [%ld %ld])\n", __func__, ret.error, ret.value);
+
+	if (ret.error) {
+		int result;
+
+		result = sbi_err_map_linux_errno(ret.error);
+		pr_err("%s: failed (error [%d])\n", __func__, result);
+
+		return result;
+	}
+
+	return ret.value;
+}
+EXPORT_SYMBOL(sbi_atst_get_evidence);
+
 /**
  * sbi_probe_extension() - Check if an SBI extension ID is supported or not.
  * @extid: The extension ID to be probed.
