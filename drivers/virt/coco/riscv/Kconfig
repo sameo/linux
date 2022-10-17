@@ -1,0 +1,8 @@
+config RISCV_APTEE_GUEST
+	tristate "RISC-V AP-TEE guest driver"
+	default m
+	depends on RISCV
+	help
+          The AP-TEE guest driver [TBC]
+
+	  If you choose 'M' here, this module will be called sev-guest.
